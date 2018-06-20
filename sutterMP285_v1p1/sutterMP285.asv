@@ -330,7 +330,7 @@ classdef sutterMP285 < serial
         function flush(obj)
             n=get(obj,'BytesAvailable');
             if  n > 0
-                temp=fread(obj,n); 
+                temp=fread(state.motor.serialPortHandle,n); 
             end
         end
         

@@ -161,7 +161,7 @@ guidata(hObject, handles);
 % update the plot and gui
 updatePlot(xyz_um,handles);
 % set(handles.button_Connect,'String','Sutter Position');
-set(handles.button_Connect,'Enable','off');
+set(handles.button_Connect,'Enable','Sutter Position');
 set(handles.button_Move,'Enable','on');
 
 fprintf(1,'SutterPostion: Sutter MP-285 ready.\n');
