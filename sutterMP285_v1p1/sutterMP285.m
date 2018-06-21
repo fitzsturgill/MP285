@@ -143,8 +143,6 @@ classdef sutterMP285 < serial
             set(obj, 'Terminator', 'CR'); % set terminator to CR
             set(obj, 'Timeout',60); % long timeout allows large move commands to complete
             set(obj, 'Tag','SutterMP285');            
-            set(obj,'Timeout',60);
-            set(obj,'Tag','sutterMP285');
             if obj.verbose >= 1, fprintf(1,'sutterMP285: %s\n',obj.versionStr); end
             
             % verify Sutter connection/operation
@@ -195,7 +193,7 @@ classdef sutterMP285 < serial
             %disp(statusbytes(27:30))
             currentVelocity=double(bitand(127,statusbytes(30)))*256+double(statusbytes(29)); % mm/s?
             
-            if obj.verbose >= 2,
+            if obj.verbose >= 2
                 fprintf(1,' "step_mul" (usteps/um): %g\n',stepMult);
                 fprintf(1,' "xspeed" [velocity] (usteps/sec): %g\n',currentVelocity);
                 fprintf(1,' velocity scale factor (usteps/step): %g\n',vScaleFactor);
@@ -292,8 +290,10 @@ classdef sutterMP285 < serial
         %% Set Origin
         function setOrigin(obj)
         % sets the origin of the coordinate system to the current position
-%             fprintf(obj,'o'); % Sutter replies with a CR
-            fwrite(obj,[uint8('o') uint8(13)], 'uint8'); % Sutter replies with a CR
+            fprintf(obj,'o'); % Sutter replies with a CR
+%             fwrite(obj,[uint8('o') uint8(13)], 'uint8'); % Fitz- trying
+%             to understand whit it means to use fprintf vs fwrite does
+%             fprintf implicitly induce fwrite via obj?
             fread(obj,1,'int8'); % read and ignore the carriage return       
         end % setOrigin
         
