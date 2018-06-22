@@ -1,4 +1,4 @@
-function moveToPosition
+function moveByIncrements
 
     global state gh
     
@@ -13,13 +13,23 @@ function moveToPosition
 
 
     requested = state.motor.requestedZ;
-    current = getPosition(obj);
-    current = current(3);
+    current = getPosition(state.motor.object);
     stepSize = state.motor.stepSize;
     % which way are we going?
-    direction = sign(requested - current);
+    direction = sign(requested - current(3));
     step = stepSize * direction;
-    while abs(requested - current) > stepSize
-        switch state.motor.actionFlag;
+    while abs(requested - current(3)) > stepSize
+        switch state.motor.actionFlag
             case 'stopped'
-                
+                disp('*** MP285 movement stopped ***');
+                return % return (exit function)
+            case 'paused'
+                pause(0.1); % loop continues...
+            case 'moving'                
+                current = getPosition(state.motor.object);
+                state.motor.currentZ = current(3);
+                updateGUIByGlobal('state.motor.currentZ');
+                nextIncrement = current + [0; 0; step];               
+                moveTo(state.motor.object,nextIncrement);
+        end
+    end

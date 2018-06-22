@@ -22,7 +22,7 @@ function varargout = MP285(varargin)
 
 % Edit the above text to modify the response to help MP285
 
-% Last Modified by GUIDE v2.5 21-Jun-2018 16:17:14
+% Last Modified by GUIDE v2.5 22-Jun-2018 12:19:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,7 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % UIWAIT makes MP285 wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+% uiwait(handles.MP285);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -211,15 +211,31 @@ function enableStop_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of enableStop
-genericCallback(hObject);
-
+    global state gh
+    genericCallback(hObject);
+    if state.motor.enableStop
+        gh.motor.pauseButton.String = 'stop';
+    else
+        switch state.motor.actionFlag
+            case 'moving'
+                gh.motor.pauseButton.String = 'pause';
+            case 'paused'
+                gh.motor.pauseButton.String = 'resume';
+        end
+    end
 
 % --- Executes on button press in moveButton.
 function moveButton_Callback(hObject, eventdata, handles)
 % hObject    handle to moveButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    
+    global state
+    switch state.motor.actionFlag
+        case 'stopped'
+            state.motor.actionFlag = 'moving';
+            updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now stop move
+            moveByIncrements;
+    end
     
 
 
@@ -232,3 +248,42 @@ function CloseFunction(hObject, eventdata, handles)
 		fclose(port); 
 		delete(port);
     end
+
+
+% --- Executes on button press in pauseButton.
+function pauseButton_Callback(hObject, eventdata, handles)
+% hObject    handle to pauseButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    global state gh
+
+    switch state.motor.actionFlag
+        case 'moving'
+            if state.motor.enableStop
+                state.motor.actionFlag = 'stopped';
+                updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now stop move
+                state.motor.enableStop = 0; % reset stop flag
+                updateGUIByGlobal('state.motor.enableStop');
+                gh.motor.pauseButton.String = 'pause';
+                stop(state.motor.object); % stop MP285
+            else
+                state.motor.actionFlag = 'paused';
+                updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now pause move
+                gh.motor.pauseButton.String = 'resume';
+            end
+        case 'paused'
+            if state.motor.enableStop
+                state.motor.actionFlag = 'stopped';
+                updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now stop move
+                state.motor.enableStop = 0; % reset stop flag
+                updateGUIByGlobal('state.motor.enableStop');
+                gh.motor.pauseButton.String = 'pause';
+                stop(state.motor.object); % stop MP285
+            else
+                state.motor.actionFlag = 'moving';
+                updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now resume move
+                gh.motor.pauseButton.String = 'pause';
+            end       
+    end
+        

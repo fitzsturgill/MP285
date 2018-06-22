@@ -344,6 +344,13 @@ classdef sutterMP285 < serial
             end
         end
         
+        %% Interrupt Move
+        function stop(obj)
+            fprintf(obj, 'C')
+            % Sutter replies with a CR
+            fread(obj,1,'int8');  % read and ignore the carriage return
+        end
+        
 
     end
         
