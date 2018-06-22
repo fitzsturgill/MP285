@@ -132,7 +132,7 @@ classdef sutterMP285 < serial
                 end
             end
             % Explicitly set the correct properties for the Sutter serial port
-            set(obj, 'BaudRate', 9600); %set to 9600 for programmed control, 1200 for SIO test (p23)
+            set(obj, 'BaudRate', 19200); %set to 9600 for programmed control, 1200 for SIO test (p23)
             set(obj, 'DataBits', 8);
             set(obj, 'DataTerminalReady', 'on');
             set(obj, 'FlowControl', 'none');
@@ -175,7 +175,10 @@ classdef sutterMP285 < serial
         function [stepMult, currentVelocity, vScaleFactor]=getStatus(obj)
             % Sends the 'status' query to the Sutter and interprets the response.
             % Returns the current settings for step multiplier and velocity.
-
+            
+            % flush out any crap
+            flush(obj);
+            
             if obj.verbose >= 2, fprintf(1,'sutterMP285: get status info:\n'); end
             fprintf(obj, 's'); % send status command
             statusbytes=fread(obj,32,'uint8');  % read the binary data
@@ -208,7 +211,9 @@ classdef sutterMP285 < serial
 
             % The Sutter sends binary data in units = 25usteps.um, i.e., *0.04 microns, & carriage return
             % (e.g. 'c' returns xxxxyyyyzzzz as 3 signed long ints, and ASCII 13 for CR)
-
+           
+            % flush out any crap
+            flush(obj);
             fprintf(obj, 'c'); % send "c" command to get current position
             xyz=fread(obj,3,'int32');  % read the binary data
             fread(obj,1,'int8');  % read and ignore the carriage return at the end
@@ -235,7 +240,8 @@ classdef sutterMP285 < serial
             xyz=xyz(:);
 
             if obj.verbose >= 2, fprintf(1,'sutterMP285: Sutter translating %g %g %g um...\n',xyz); end
-
+            % flush out any crap
+            flush(obj);
             here = getPosition(obj);
 
             moveTime=moveTo(obj,(here+xyz));
@@ -265,7 +271,10 @@ classdef sutterMP285 < serial
             %     xyz=min(xyz,posLimit);
             %     xyz=max(xyz,negLimit);
             % end
-
+            
+            % flush out any crap
+            flush(obj);
+            
             if obj.verbose >= 2, fprintf(1,'sutterMP285: Sutter moving to %g %g %g um...\n',xyz); end
             % convert to steps, and then convert to binary bytes
             %  (in a row instead of column)
@@ -305,7 +314,8 @@ classdef sutterMP285 < serial
         % Change velocity command 'V'xxCR where xx= unsigned short (16bit) int velocity
         % set by bits 14 to 0, and bit 15 indicates ustep resolution  0=10, 1=50 uSteps/step
         % V is ascii 86
-        
+            % flush out any crap
+            flush(obj);
             if nargin < 3, vScaleFactor = 10; end
 
             % velocity units still unclear, seems to be steps/sec? 

@@ -97,6 +97,10 @@ function port_Callback(hObject, eventdata, handles)
     end       
     state.motor.connectionStatus='connected';
     updateGUIByGlobal('state.motor.connectionStatus');
+    xyz_um = getPosition(state.motor.object);
+    state.motor.currentZ = xyz_um(3);
+    updateGUIByGlobal('state.motor.currentZ');
+    
 
 
 % --- Executes during object creation, after setting all properties.
@@ -123,6 +127,7 @@ function velocity_Callback(hObject, eventdata, handles)
     global state
     genericCallback(hObject);
     setVelocity(state.motor.object, state.motor.velocity, state.motor.vScaleFactor);
+    getStatus(state.motor.object);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -214,3 +219,16 @@ function moveButton_Callback(hObject, eventdata, handles)
 % hObject    handle to moveButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+    
+    
+
+
+function CloseFunction(hObject, eventdata, handles)
+% is called when window is closed
+    global state
+% close connection to Sutter
+    port=instrfind('Port',state.motor.port);
+	if length(port) > 0
+		fclose(port); 
+		delete(port);
+    end
