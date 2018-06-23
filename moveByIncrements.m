@@ -1,14 +1,7 @@
 function moveByIncrements
 
-    global state gh
+    global state
     
-    
-%     
-%             actionFlag='stopped'      % {'stopped', 'moving', 'paused'}
-%         enableStop=0            Gui gh.MP285.enableStop Numeric 1
-% 		currentZ=0				Gui gh.MP285.currentZ   Numeric 1
-%         requestedZ=0            Gui gh.MP285.requestedZ Numeric 1
-%         stepSize=50             Gui gh.MP285.stepSize   Numeric 1
 
 
 

@@ -216,13 +216,13 @@ function enableStop_Callback(hObject, eventdata, handles)
 %     pause(0.01);
     genericCallback(hObject);
     if state.motor.enableStop
-        gh.motor.pauseButton.String = 'stop';
+        gh.MP285.pauseButton.String = 'stop';
     else
         switch state.motor.actionFlag
             case 'moving'
-                gh.motor.pauseButton.String = 'pause';
+                gh.MP285.pauseButton.String = 'pause';
             case 'paused'
-                gh.motor.pauseButton.String = 'resume';
+                gh.MP285.pauseButton.String = 'resume';
         end
     end
 
@@ -269,12 +269,12 @@ function pauseButton_Callback(hObject, eventdata, handles)
                 updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now stop move
                 state.motor.enableStop = 0; % reset stop flag
                 updateGUIByGlobal('state.motor.enableStop');
-                gh.motor.pauseButton.String = 'pause';
+                gh.MP285.pauseButton.String = 'pause';
                 stop(state.motor.object); % stop MP285
             else
                 state.motor.actionFlag = 'paused';
                 updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now pause move
-                gh.motor.pauseButton.String = 'resume';
+                gh.MP285.pauseButton.String = 'resume';
             end
         case 'paused'
             if state.motor.enableStop
@@ -282,12 +282,13 @@ function pauseButton_Callback(hObject, eventdata, handles)
                 updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now stop move
                 state.motor.enableStop = 0; % reset stop flag
                 updateGUIByGlobal('state.motor.enableStop');
-                gh.motor.pauseButton.String = 'pause';
+                gh.MP285.pauseButton.String = 'pause';
                 stop(state.motor.object); % stop MP285
             else
                 state.motor.actionFlag = 'moving';
                 updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now resume move
-                gh.motor.pauseButton.String = 'pause';
+                gh.MP285.pauseButton.String = 'pause';
             end       
     end
+
         
