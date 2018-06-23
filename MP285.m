@@ -212,6 +212,8 @@ function enableStop_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of enableStop
     global state gh
+    display('stop enabled');
+%     pause(0.01);
     genericCallback(hObject);
     if state.motor.enableStop
         gh.motor.pauseButton.String = 'stop';
@@ -236,6 +238,8 @@ function moveButton_Callback(hObject, eventdata, handles)
             updateGUIByGlobal('state.motor.actionFlag'); % moveByIncrements should now stop move
             moveByIncrements;
     end
+    state.motor.actionFlag = 'stopped';
+    updateGUIByGlobal('state.motor.actionFlag');
     
 
 
