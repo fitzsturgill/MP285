@@ -22,7 +22,7 @@ function varargout = MP285(varargin)
 
 % Edit the above text to modify the response to help MP285
 
-% Last Modified by GUIDE v2.5 22-Jun-2018 12:19:59
+% Last Modified by GUIDE v2.5 26-Jun-2018 14:34:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -212,7 +212,7 @@ function enableStop_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of enableStop
     global state gh
-    display('stop enabled');
+%     display('stop enabled');
 %     pause(0.01);
     genericCallback(hObject);
     if state.motor.enableStop
@@ -223,6 +223,8 @@ function enableStop_Callback(hObject, eventdata, handles)
                 gh.MP285.pauseButton.String = 'pause';
             case 'paused'
                 gh.MP285.pauseButton.String = 'resume';
+            case 'stopped'
+                gh.MP285.pauseButton.String = 'pause';
         end
     end
 
@@ -292,3 +294,23 @@ function pauseButton_Callback(hObject, eventdata, handles)
     end
 
         
+
+
+% --- Executes on button press in zeroButton.
+function zeroButton_Callback(hObject, eventdata, handles)
+% hObject    handle to zeroButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    disp('not working');
+    return
+    global state
+    
+    setOrigin(state.motor.object);
+    updatePanel(state.motor.object);
+    xyz_um = getPosition(state.motor.object);
+    state.motor.currentZ = xyz_um(3);
+    updateGUIByGlobal('state.motor.currentZ');
+    
+    
+    
+    
